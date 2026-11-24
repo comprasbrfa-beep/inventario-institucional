@@ -1,0 +1,2371 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario Institucional</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-icon">I</div>
+            <div>
+                <h2>Inventario</h2>
+                <span>Institucional</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+            <p class="menu-title">MENÚ PRINCIPAL</p>
+
+            <a href="#" class="nav-link active" data-page="dashboard"><span>▦</span> Dashboard</a>
+            <a href="#" class="nav-link" data-page="inventario"><span>▤</span> Inventario general</a>
+            <a href="#" class="nav-link" data-page="movimientos"><span>⇄</span> Movimientos</a>
+            <a href="#" class="nav-link" data-page="solicitudes"><span>☷</span> Solicitudes docentes</a>
+            <a href="#" class="nav-link" data-page="proveeduria"><span>▣</span> Proveeduría</a>
+
+            <p class="menu-title">GESTIÓN</p>
+
+            <a href="#" class="nav-link" data-page="docentes"><span>♙</span> Docentes</a>
+            <a href="#" class="nav-link" data-page="reportes"><span>▥</span> Reportes</a>
+            <a href="#" class="nav-link" data-page="configuracion"><span>⚙</span> Configuración</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span>Sistema de gestión</span>
+            <small>Versión 2.0</small>
+        </div>
+    </aside>
+
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1 id="pageTitle">Dashboard</h1>
+                <p>Sistema de gestión de inventario institucional.</p>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">A</div>
+
+                <div class="user-information">
+                    <strong id="userName">Sin conectar</strong>
+                    <small id="userEmail">Conecta tu cuenta Google</small>
+                </div>
+
+                <button id="googleButton" class="google-button">
+                    Conectar con Google
+                </button>
+
+                <button id="logoutButton" class="logout-button" hidden>
+                    Salir
+                </button>
+            </div>
+        </header>
+
+        <div id="connectionMessage" class="connection-message">
+            <span id="connectionIndicator" class="connection-indicator"></span>
+            <span id="connectionText">Esperando conexión con Firebase...</span>
+        </div>
+
+        <!-- DASHBOARD -->
+        <section class="page active" id="dashboard">
+
+            <div class="welcome-section">
+                <h2>Panel de control</h2>
+                <p>Resumen general de la gestión institucional.</p>
+            </div>
+
+            <div class="dashboard-cards">
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">▤</div>
+                    <div>
+                        <p>Total de productos</p>
+                        <h2 id="dashboardProducts">0</h2>
+                        <small>Productos registrados</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <div>
+                        <p>Productos disponibles</p>
+                        <h2 id="dashboardAvailable">0</h2>
+                        <small>Con existencias</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">!</div>
+                    <div>
+                        <p>Stock bajo</p>
+                        <h2 id="dashboardLowStock">0</h2>
+                        <small>De 1 a 10 unidades</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon blue">☷</div>
+                    <div>
+                        <p>Solicitudes totales</p>
+                        <h2 id="dashboardRequests">0</h2>
+                        <small>Solicitudes registradas</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">!</div>
+                    <div>
+                        <p>Solicitudes pendientes</p>
+                        <h2 id="dashboardPendingRequests">0</h2>
+                        <small>Por entregar</small>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">✓</div>
+                    <div>
+                        <p>Solicitudes entregadas</p>
+                        <h2 id="dashboardDeliveredRequests">0</h2>
+                        <small>Completadas</small>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="content-card dashboard-quick-card">
+                <div class="section-heading">
+                    <div>
+                        <h3>Accesos rápidos</h3>
+                        <p>Selecciona el módulo que deseas utilizar.</p>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <button class="quick-button" data-page="inventario">
+                        <span>▤</span>
+                        <strong>Inventario general</strong>
+                        <small>Consultar y administrar productos</small>
+                    </button>
+
+                    <button class="quick-button" data-page="solicitudes">
+                        <span>☷</span>
+                        <strong>Solicitudes docentes</strong>
+                        <small>Gestionar solicitudes de materiales</small>
+                    </button>
+
+                    <button class="quick-button" data-page="movimientos">
+                        <span>⇄</span>
+                        <strong>Movimientos</strong>
+                        <small>Registrar entradas y salidas</small>
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-card dashboard-activity-card">
+                <div class="section-heading">
+                    <div>
+                        <h3>Actividad reciente</h3>
+                        <p>Últimas solicitudes y entregas registradas.</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="dashboard-activity-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha y hora</th>
+                                <th>Actividad</th>
+                                <th>Docente</th>
+                                <th>Material</th>
+                                <th>Cantidad</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="dashboardActivityTable">
+                            <tr>
+                                <td colspan="5" class="empty-message">
+                                    Conecta tu cuenta Google para consultar la actividad.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- INVENTARIO -->
+        <section class="page" id="inventario">
+
+            <div class="section-heading inventory-heading">
+                <div>
+                    <h2>Inventario general</h2>
+                    <p>Administra los productos y materiales de la institución.</p>
+                </div>
+
+                
+<div class="import-header-actions"
+     style="display: flex; gap: 10px; flex-wrap: wrap;">
+
+    <button type="button"
+            class="secondary-button"
+            id="openImportButton"
+            hidden disabled>
+        Importar Excel
+    </button>
+
+    <button class="primary-button" id="addProductBtn">
+        + Agregar producto
+    </button>
+
+</div>
+
+            </div>
+
+            <div class="inventory-summary">
+                <div class="summary-card">
+                    <span>Total de productos</span>
+                    <h2 id="inventoryCount">0</h2>
+                </div>
+
+                <div class="summary-card">
+                    <span>Unidades disponibles</span>
+                    <h2 id="inventoryUnits">0</h2>
+                </div>
+
+                <div class="summary-card">
+                    <span>Sin existencias</span>
+                    <h2 id="outOfStock">0</h2>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="inventory-toolbar">
+                    <div>
+                        <h3>Lista de productos</h3>
+                        <p>Consulta, modifica o elimina los registros.</p>
+                    </div>
+
+                    <input type="search" id="searchProduct"
+                           placeholder="Buscar producto o ubicación...">
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Unidad</th>
+                                <th>Cantidad</th>
+                                <th>Ubicación</th>
+                                <th>Estado</th>
+                                <th>Notas</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="inventoryTable">
+                            <tr>
+                                <td colspan="7" class="empty-message">
+                                    Conecta tu cuenta de Google para consultar el inventario.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+<!-- MODAL DE IMPORTACIÓN DE INVENTARIO -->
+
+<div class="modal"
+     id="importModal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="importTitle"
+     hidden>
+
+    <div class="modal-content import-modal-content"
+         style="max-width: 1100px;">
+
+        <!-- ENCABEZADO -->
+
+        <div class="modal-header">
+
+            <div>
+
+                <h2 id="importTitle">
+                    Importar inventario desde Excel
+                </h2>
+
+                <p>
+                    Registra varios materiales de manera
+                    simultánea en el inventario institucional.
+                </p>
+
+            </div>
+
+            <button type="button"
+                    class="close-button"
+                    id="closeImportButton"
+                    aria-label="Cerrar">
+                ×
+            </button>
+
+        </div>
+
+        <!-- SELECCIÓN DEL ARCHIVO -->
+
+        <div class="form-group">
+
+            <label for="importFile">
+                Seleccionar archivo Excel *
+            </label>
+
+            <input type="file"
+                   id="importFile"
+                   accept=".xlsx">
+
+            <small class="field-help">
+                Selecciona un archivo de Excel con
+                los materiales que deseas importar.
+            </small>
+
+        </div>
+
+        <!-- CONFIGURACIÓN DE IMPORTACIÓN -->
+
+        <div class="form-row">
+
+            <div class="form-group">
+
+                <label for="importSheet">
+                    Pestaña del inventario *
+                </label>
+
+                <select id="importSheet" disabled>
+
+                    <option value="">
+                        Primero selecciona un archivo
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="importUnit">
+                    Unidad institucional
+                </label>
+
+                <input type="text"
+                       id="importUnit"
+                       value="Institucional"
+                       readonly>
+
+            </div>
+
+        </div>
+
+        <!-- REVISAR ARCHIVO -->
+
+        <button type="button"
+                class="secondary-button"
+                id="previewImportButton"
+                disabled>
+
+            Revisar productos
+
+        </button>
+
+        <small class="field-help">
+
+            La unidad de medida del Excel no será importada.
+            Los productos existentes no serán sobrescritos.
+
+        </small>
+
+        <!-- RESUMEN DE IMPORTACIÓN -->
+
+        <p id="importSummary"
+           class="form-message"
+           aria-live="polite">
+        </p>
+
+        <!-- VISTA PREVIA -->
+
+        <div id="importPreview"
+             class="table-container"
+             style="margin-top: 20px;"
+             hidden>
+
+            <table style="min-width: 1000px;">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Importar</th>
+
+                        <th>Fila Excel</th>
+
+                        <th>Producto</th>
+
+                        <th>Cantidad</th>
+
+                        <th>Ubicación</th>
+
+                        <th>Observaciones</th>
+
+                        <th>Estado</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="importTable">
+
+                    <tr>
+
+                        <td colspan="7"
+                            class="empty-message">
+
+                            Selecciona un archivo para
+                            visualizar los productos.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- MENSAJES DE IMPORTACIÓN -->
+
+        <p id="importMessage"
+           class="form-message"
+           role="status"
+           aria-live="polite"
+           style="margin-top: 15px;">
+        </p>
+
+        <!-- BOTONES -->
+
+        <div class="modal-actions">
+
+            <button type="button"
+                    class="secondary-button"
+                    id="cancelImportButton">
+
+                Cancelar
+
+            </button>
+
+            <button type="button"
+                    class="primary-button"
+                    id="saveImportButton"
+                    disabled>
+
+                Importar productos seleccionados
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FIN DEL MODAL DE IMPORTACIÓN -->
+
+        <!-- MODAL DE PRODUCTOS -->
+        <div class="modal" id="productModal">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <div>
+                        <h2 id="modalTitle">Agregar producto</h2>
+                        <p>Completa la información del producto.</p>
+                    </div>
+
+                    <button class="close-button" id="closeModal">×</button>
+                </div>
+
+                <form id="productForm">
+                    <input type="hidden" id="productId">
+
+                    <div class="form-group">
+                        <label for="productName">Nombre del producto *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productUnit">Unidad *</label>
+                            <select id="productUnit" required>
+                                <option value="">Seleccionar</option>
+                                <option value="Unidad 1">Unidad 1</option>
+                                <option value="Unidad 2">Unidad 2</option>
+                                <option value="Unidad 3">Unidad 3</option>
+                                <option value="Unidad 4">Unidad 4</option>
+                                <option value="Institucional">Institucional</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productQuantity">Cantidad *</label>
+                            <input type="number" id="productQuantity"
+                                   min="0" step="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productLocation">Ubicación / Bodega *</label>
+                        <input type="text" id="productLocation" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="productNotes">Notas</label>
+                        <textarea id="productNotes" rows="3"></textarea>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button type="button" class="secondary-button" id="cancelProduct">
+                            Cancelar
+                        </button>
+
+                        <button type="submit" class="primary-button" id="saveProductButton">
+                            Guardar producto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        
+<!-- ==========================================
+     SOLICITUDES DOCENTES
+========================================== -->
+
+<section class="page" id="solicitudes">
+
+    <!-- ENCABEZADO -->
+
+    <div class="section-heading">
+
+        <div>
+
+            <h2>Solicitudes docentes</h2>
+
+            <p>
+                Registra pedidos de uno o varios materiales
+                y consulta el estado de las entregas.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESUMEN DE PEDIDOS -->
+
+    <div class="request-summary">
+
+        <div class="summary-card">
+
+            <span>Total de pedidos</span>
+
+            <h2 id="requestCount">0</h2>
+
+        </div>
+
+        <div class="summary-card">
+
+            <span>Pedidos pendientes</span>
+
+            <h2 id="requestPendingCount">0</h2>
+
+        </div>
+
+        <div class="summary-card">
+
+            <span>Pedidos completados</span>
+
+            <h2 id="requestDeliveredCount">0</h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- FORMULARIO DE NUEVO PEDIDO -->
+
+    <div class="content-card request-form-card">
+
+        <div class="section-heading">
+
+            <div>
+
+                <h3>Registrar nuevo pedido</h3>
+
+                <p>
+                    Agrega todos los materiales que necesitas
+                    y envíalos en una sola solicitud.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <form id="requestForm" novalidate>
+
+            <!-- INFORMACIÓN DEL DOCENTE -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="requestTeacher">
+                        Docente solicitante
+                    </label>
+
+                    <input
+                        type="text"
+                        id="requestTeacher"
+                        placeholder="Conecta tu cuenta Google"
+                        readonly
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="requestUnit">
+                        Unidad *
+                    </label>
+
+                    <select id="requestUnit" required disabled>
+
+                        <option value="">
+                            Seleccionar unidad
+                        </option>
+
+                        <option value="Unidad 1">
+                            Unidad 1
+                        </option>
+
+                        <option value="Unidad 2">
+                            Unidad 2
+                        </option>
+
+                        <option value="Unidad 3">
+                            Unidad 3
+                        </option>
+
+                        <option value="Unidad 4">
+                            Unidad 4
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- SELECCIÓN DE MATERIALES -->
+
+            <div class="request-product-section">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h3>Seleccionar materiales</h3>
+
+                        <p>
+                            Busca y agrega los productos
+                            que deseas solicitar.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUSCADOR -->
+
+                <div class="form-group">
+
+                    <label for="requestProductSearch">
+                        Buscar material
+                    </label>
+
+                    <input
+                        type="search"
+                        id="requestProductSearch"
+                        placeholder="Escribe el nombre del material..."
+                        autocomplete="off"
+                        disabled
+                    >
+
+                </div>
+
+
+                <!-- PRODUCTO -->
+
+                <div class="form-group">
+
+                    <label for="requestProduct">
+                        Material solicitado *
+                    </label>
+
+                    <select id="requestProduct" disabled>
+
+                        <option value="">
+                            Primero selecciona una unidad
+                        </option>
+
+                    </select>
+
+                    <small class="field-help">
+                        Se muestran los materiales de la unidad
+                        seleccionada y los institucionales.
+                    </small>
+
+                </div>
+
+
+                <!-- DISPONIBILIDAD Y CANTIDAD -->
+
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label for="requestAvailableStock">
+                            Disponibilidad actual
+                        </label>
+
+                        <input
+                            type="text"
+                            id="requestAvailableStock"
+                            value="Selecciona un material"
+                            readonly
+                        >
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="requestQuantity">
+                            Cantidad solicitada *
+                        </label>
+
+                        <input
+                            type="number"
+                            id="requestQuantity"
+                            min="1"
+                            step="1"
+                            placeholder="Ej. 10"
+                            disabled
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- OBSERVACIONES DEL MATERIAL -->
+
+                <div class="form-group">
+
+                    <label for="requestNotes">
+                        Observaciones del material
+                    </label>
+
+                    <textarea
+                        id="requestNotes"
+                        rows="3"
+                        maxlength="5000"
+                        placeholder="Color, tamaño, características u otra información..."
+                        disabled
+                    ></textarea>
+
+                </div>
+
+
+                <!-- AVISO DE DISPONIBILIDAD -->
+
+                <p
+                    id="requestStockMessage"
+                    class="field-help"
+                    aria-live="polite"
+                ></p>
+
+
+                <!-- AGREGAR AL CARRITO -->
+
+                <button
+                    type="button"
+                    class="primary-button"
+                    id="addRequestItemButton"
+                    disabled
+                >
+                    + Agregar material al pedido
+                </button>
+
+            </div>
+
+
+            <!-- ==========================================
+                 CARRITO DE SOLICITUDES
+            ========================================== -->
+
+            <div class="request-cart">
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h3>Materiales seleccionados</h3>
+
+                        <p>
+                            Revisa y modifica los materiales
+                            antes de enviar tu pedido.
+                        </p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="clearRequestCartButton"
+                        disabled
+                    >
+                        Vaciar lista
+                    </button>
+
+                </div>
+
+
+                <!-- RESUMEN DEL CARRITO -->
+
+                <div class="inventory-summary">
+
+                    <div class="summary-card">
+
+                        <span>Materiales seleccionados</span>
+
+                        <h2 id="requestCartCount">0</h2>
+
+                    </div>
+
+                    <div class="summary-card">
+
+                        <span>Total de unidades solicitadas</span>
+
+                        <h2 id="requestCartUnits">0</h2>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TABLA DEL CARRITO -->
+
+                <div class="table-container">
+
+                    <table class="request-cart-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Material</th>
+
+                                <th>Disponible</th>
+
+                                <th>Cantidad solicitada</th>
+
+                                <th>Observaciones</th>
+
+                                <th>Acciones</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="requestCartTable">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-message"
+                                >
+                                    Todavía no has agregado
+                                    materiales a tu pedido.
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- INFORMACIÓN DEL PEDIDO -->
+
+                <p
+                    id="requestCartMessage"
+                    class="field-help"
+                    aria-live="polite"
+                ></p>
+
+            </div>
+
+
+            <!-- OBSERVACIONES GENERALES -->
+
+            <div class="form-group">
+
+                <label for="requestGeneralNotes">
+                    Observaciones generales del pedido
+                </label>
+
+                <textarea
+                    id="requestGeneralNotes"
+                    rows="3"
+                    maxlength="5000"
+                    placeholder="Indica para qué actividad necesitas los materiales, fecha requerida u otra información..."
+                    disabled
+                ></textarea>
+
+            </div>
+
+
+            <!-- INFORMACIÓN IMPORTANTE -->
+
+            <div class="request-information">
+
+                <strong>Información importante</strong>
+
+                <p>
+                    Enviar una solicitud no descuenta
+                    automáticamente las existencias del
+                    inventario.
+                </p>
+
+                <p>
+                    Las cantidades se descontarán cuando
+                    la administración registre la entrega
+                    de los materiales.
+                </p>
+
+                <p>
+                    Si un material no tiene suficientes
+                    existencias, la cantidad faltante
+                    podrá quedar pendiente de entrega.
+                </p>
+
+            </div>
+
+
+            <!-- ENVIAR PEDIDO -->
+
+            <div class="request-form-footer">
+
+                <p
+                    id="requestMessage"
+                    class="form-message"
+                    role="status"
+                    aria-live="polite"
+                >
+                    Conecta tu cuenta Google para
+                    registrar solicitudes.
+                </p>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                    id="saveRequestButton"
+                    disabled
+                >
+                    Enviar pedido completo
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ==========================================
+         HISTORIAL DE PEDIDOS
+    ========================================== -->
+
+    <div class="content-card requests-list-card">
+
+        <div class="inventory-toolbar">
+
+            <div>
+
+                <h3>Pedidos registrados</h3>
+
+                <p>
+                    Consulta los materiales solicitados,
+                    entregados y pendientes de cada pedido.
+                </p>
+
+            </div>
+
+            <input
+                type="search"
+                id="requestHistorySearch"
+                placeholder="Buscar pedido, docente o material..."
+                autocomplete="off"
+                disabled
+            >
+
+        </div>
+
+
+        <!-- FILTROS DEL HISTORIAL -->
+
+        <div class="form-row request-history-filters">
+
+            <div class="form-group">
+
+                <label for="requestStatusFilter">
+                    Estado del pedido
+                </label>
+
+                <select id="requestStatusFilter" disabled>
+
+                    <option value="Todos">
+                        Todos los estados
+                    </option>
+
+                    <option value="Pendiente">
+                        Pendientes
+                    </option>
+
+                    <option value="Parcial">
+                        Entregas parciales
+                    </option>
+
+                    <option value="Entregada">
+                        Completados
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="requestUnitFilter">
+                    Unidad
+                </label>
+
+                <select id="requestUnitFilter" disabled>
+
+                    <option value="Todas">
+                        Todas las unidades
+                    </option>
+
+                    <option value="Unidad 1">
+                        Unidad 1
+                    </option>
+
+                    <option value="Unidad 2">
+                        Unidad 2
+                    </option>
+
+                    <option value="Unidad 3">
+                        Unidad 3
+                    </option>
+
+                    <option value="Unidad 4">
+                        Unidad 4
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- TABLA DE PEDIDOS -->
+
+        <div class="table-container">
+
+            <table class="requests-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Pedido</th>
+
+                        <th>Fecha</th>
+
+                        <th>Docente</th>
+
+                        <th>Unidad</th>
+
+                        <th>Material</th>
+
+                        <th>Solicitado</th>
+
+                        <th>Entregado</th>
+
+                        <th>Pendiente</th>
+
+                        <th>Estado</th>
+
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="requestTable">
+
+                    <tr>
+
+                        <td
+                            colspan="10"
+                            class="empty-message"
+                        >
+                            Conecta tu cuenta Google para
+                            consultar los pedidos registrados.
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FIN DE SOLICITUDES DOCENTES -->
+
+
+        <!-- MOVIMIENTOS -->
+        <section class="page" id="movimientos">
+            <div class="section-heading">
+                <div>
+                    <h2>Movimientos de inventario</h2>
+                    <p>Registra entradas, salidas y ajustes de materiales.</p>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <div class="section-heading">
+                    <div>
+                        <h3>Registrar movimiento</h3>
+                        <p>Selecciona un producto para consultar sus existencias actuales.</p>
+                    </div>
+                </div>
+
+                <form id="movementForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="movementType">Tipo de movimiento *</label>
+                            <select id="movementType" required>
+                                <option value="Entrada">Entrada</option>
+                                <option value="Salida">Salida</option>
+                                <option value="Ajuste">Ajuste de inventario</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="movementProduct">Producto *</label>
+                            <select id="movementProduct" required>
+                                <option value="">Seleccionar producto</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="movementCurrentStock">Existencia actual</label>
+                            <input type="text" id="movementCurrentStock"
+                                   value="Selecciona un producto" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="movementQuantity" id="movementQuantityLabel">
+                                Cantidad del movimiento *
+                            </label>
+                            <input type="number" id="movementQuantity"
+                                   min="0" step="1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="movementReason">Motivo *</label>
+                        <input type="text" id="movementReason"
+                               placeholder="Ej. Compra, devolución o entrega de materiales"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="movementNotes">Observaciones</label>
+                        <textarea id="movementNotes" rows="3"
+                                  placeholder="Información adicional (opcional)"></textarea>
+                    </div>
+
+                    <div class="request-form-footer">
+                        <p id="movementMessage" class="form-message"></p>
+
+                        <button type="submit" class="primary-button"
+                                id="saveMovementButton">
+                            Registrar movimiento
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="content-card">
+                <div class="section-heading">
+                    <div>
+                        <h3>Historial de movimientos</h3>
+                        <p>Consulta los cambios de existencias registrados.</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Producto</th>
+                                <th>Unidad</th>
+                                <th>Cantidad</th>
+                                <th>Stock anterior</th>
+                                <th>Stock nuevo</th>
+                                <th>Motivo</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="movementTable">
+                            <tr>
+                                <td colspan="8" class="empty-message">
+                                    Conecta tu cuenta Google para consultar los movimientos.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+      
+<!-- PROVEEDURÍA -->
+<section class="page" id="proveeduria">
+
+    <div class="section-heading inventory-heading">
+        <div>
+            <h2>Proveeduría</h2>
+            <p>
+                Administra proveedores, materiales pendientes
+                y planificación de compras.
+            </p>
+        </div>
+    </div>
+
+    <!-- RESUMEN DE PROVEEDURÍA -->
+    <div class="inventory-summary">
+
+        <div class="summary-card">
+            <span>Productos registrados</span>
+            <h2 id="supplyProductsCount">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Unidades pendientes de entrega</span>
+            <h2 id="supplyPendingUnits">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Costo estimado de compras</span>
+            <h2 id="supplyEstimatedCost">₡0</h2>
+        </div>
+
+    </div>
+
+    <!-- PLANIFICACIÓN DE COMPRAS -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Planificación de compras</h3>
+                <p>
+                    Consulta existencias, solicitudes pendientes
+                    y materiales que necesitas comprar.
+                </p>
+            </div>
+        </div>
+
+        <div class="inventory-toolbar">
+            <div>
+                <h3>Materiales y necesidades</h3>
+                <p>
+                    Información del inventario institucional.
+                </p>
+            </div>
+
+            <input
+                type="search"
+                id="supplySearch"
+                placeholder="Buscar material o proveedor..."
+            >
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Unidad</th>
+                        <th>Disponible</th>
+                        <th>Pendiente</th>
+                        <th>Por comprar</th>
+                        <th>Proveedor</th>
+                        <th>Precio unitario</th>
+                        <th>Costo estimado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="supplyTable">
+                    <tr>
+                        <td colspan="10" class="empty-message">
+                            Conecta tu cuenta administradora
+                            para consultar Proveeduría.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p id="supplyMessage" class="form-message"></p>
+
+    </div>
+
+    <!-- DATOS DE COMPRA -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Datos de compra del material</h3>
+                <p>
+                    Asocia un proveedor, precio y cantidad
+                    de compra a cada producto.
+                </p>
+            </div>
+        </div>
+
+        <form id="supplyForm">
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="supplyProduct">
+                        Producto *
+                    </label>
+
+                    <select id="supplyProduct" required>
+                        <option value="">
+                            Seleccionar producto
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="supplyProvider">
+                        Proveedor *
+                    </label>
+
+                    <select id="supplyProvider" required>
+                        <option value="">
+                            Seleccionar proveedor
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="supplyUnitPrice">
+                        Precio unitario (₡) *
+                    </label>
+
+                    <input
+                        type="number"
+                        id="supplyUnitPrice"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="supplyPurchaseQuantity">
+                        Cantidad adicional por comprar
+                    </label>
+
+                    <input
+                        type="number"
+                        id="supplyPurchaseQuantity"
+                        min="0"
+                        step="1"
+                        value="0"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="supplyPurchaseStatus">
+                        Estado de compra
+                    </label>
+
+                    <select id="supplyPurchaseStatus">
+                        <option value="Pendiente">
+                            Pendiente
+                        </option>
+                        <option value="En proceso">
+                            En proceso
+                        </option>
+                        <option value="Comprado">
+                            Comprado
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="supplyPurchaseNotes">
+                        Observaciones
+                    </label>
+
+                    <textarea
+                        id="supplyPurchaseNotes"
+                        rows="3"
+                        placeholder="Información adicional..."
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="request-form-footer">
+
+                <p
+                    id="supplyFormMessage"
+                    class="form-message"
+                >
+                    Pendiente de conectar con Firebase.
+                </p>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                    id="saveSupplyButton"
+                    disabled
+                >
+                    Guardar datos de compra
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- ADMINISTRACIÓN DE PROVEEDORES -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Administración de proveedores</h3>
+                <p>
+                    Registra los proveedores de materiales
+                    de la institución.
+                </p>
+            </div>
+        </div>
+
+        <form id="providerForm">
+
+            <input
+                type="hidden"
+                id="providerId"
+            >
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="providerName">
+                        Nombre del proveedor *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="providerName"
+                        placeholder="Nombre de la empresa"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="providerLocation">
+                        Ubicación / Sucursal
+                    </label>
+
+                    <input
+                        type="text"
+                        id="providerLocation"
+                        placeholder="Ubicación del proveedor"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="providerPhone">
+                        Contacto / Teléfono
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="providerPhone"
+                        placeholder="Número telefónico"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="providerLink">
+                        Enlace de compra
+                    </label>
+
+                    <input
+                        type="url"
+                        id="providerLink"
+                        placeholder="https://..."
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="providerNotes">
+                    Observaciones
+                </label>
+
+                <textarea
+                    id="providerNotes"
+                    rows="3"
+                    placeholder="Información adicional..."
+                ></textarea>
+            </div>
+
+            <div class="request-form-footer">
+
+                <p
+                    id="providerMessage"
+                    class="form-message"
+                >
+                    Pendiente de conectar con Firebase.
+                </p>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                    id="saveProviderButton"
+                    disabled
+                >
+                    Guardar proveedor
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- LISTA DE PROVEEDORES -->
+    <div class="content-card">
+
+        <div class="section-heading">
+            <div>
+                <h3>Proveedores registrados</h3>
+                <p>
+                    Consulta los proveedores disponibles.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Proveedor</th>
+                        <th>Ubicación</th>
+                        <th>Contacto</th>
+                        <th>Enlace de compra</th>
+                        <th>Observaciones</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="providerTable">
+                    <tr>
+                        <td colspan="6" class="empty-message">
+                            Todavía no hay proveedores cargados.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</section>
+      
+<!-- DOCENTES -->
+<section class="page" id="docentes">
+
+    <div class="section-heading inventory-heading">
+        <div>
+            <h2>Gestión de docentes</h2>
+            <p>
+                Administra la información del personal docente
+                y consulta sus solicitudes de materiales.
+            </p>
+        </div>
+    </div>
+
+    <!-- RESUMEN DE DOCENTES -->
+    <div class="inventory-summary">
+
+        <div class="summary-card">
+            <span>Total de docentes</span>
+            <h2 id="teacherTotal">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Docentes activos</span>
+            <h2 id="teacherActive">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Docentes inactivos</span>
+            <h2 id="teacherInactive">0</h2>
+        </div>
+
+    </div>
+
+    <!-- REGISTRO DE DOCENTES -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Registrar docente</h3>
+                <p>
+                    Completa los datos del personal docente.
+                </p>
+            </div>
+        </div>
+
+        <form id="teacherForm">
+
+            <input type="hidden" id="teacherId">
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="teacherName">
+                        Nombre completo *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="teacherName"
+                        placeholder="Nombre y apellidos"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="teacherEmail">
+                        Correo electrónico *
+                    </label>
+
+                    <input
+                        type="email"
+                        id="teacherEmail"
+                        placeholder="docente@gmail.com"
+                        required
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="teacherStatus">
+                    Estado del docente
+                </label>
+
+                <select id="teacherStatus" required>
+                    <option value="Activo">Activo</option>
+                    <option value="Inactivo">Inactivo</option>
+                </select>
+            </div>
+
+            <div class="request-form-footer">
+
+                <p id="teacherMessage" class="form-message">
+                    Pendiente de conectar con Firebase.
+                </p>
+
+                <div class="modal-actions">
+                    <button
+                        type="button"
+                        class="secondary-button"
+                        id="cancelTeacherButton"
+                    >
+                        Limpiar formulario
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                        id="saveTeacherButton"
+                        disabled
+                    >
+                        Guardar docente
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- LISTADO DE DOCENTES -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="inventory-toolbar">
+            <div>
+                <h3>Docentes registrados</h3>
+                <p>
+                    Consulta y administra los registros
+                    del personal docente.
+                </p>
+            </div>
+
+            <input
+                type="search"
+                id="teacherSearch"
+                placeholder="Buscar docente o correo..."
+            >
+        </div>
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre completo</th>
+                        <th>Correo electrónico</th>
+                        <th>Estado</th>
+                        <th>Solicitudes</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="teacherTable">
+                    <tr>
+                        <td colspan="5" class="empty-message">
+                            Conecta tu cuenta administradora
+                            para consultar los docentes.
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- HISTORIAL DE SOLICITUDES -->
+    <div class="content-card">
+
+        <div class="section-heading">
+            <div>
+                <h3>Historial de solicitudes por docente</h3>
+                <p>
+                    Selecciona un docente para consultar
+                    sus solicitudes de materiales.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="teacherHistorySelect">
+                Seleccionar docente
+            </label>
+
+            <select id="teacherHistorySelect">
+                <option value="">
+                    Seleccionar docente
+                </option>
+            </select>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Unidad solicitada</th>
+                        <th>Material</th>
+                        <th>Solicitado</th>
+                        <th>Entregado</th>
+                        <th>Pendiente</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+
+                <tbody id="teacherHistoryTable">
+                    <tr>
+                        <td colspan="7" class="empty-message">
+                            Selecciona un docente para
+                            consultar su historial.
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+       
+<!-- REPORTES -->
+<section class="page" id="reportes">
+
+    <!-- ENCABEZADO -->
+    <div class="section-heading inventory-heading">
+        <div>
+            <h2>Reportes institucionales</h2>
+            <p>
+                Consulta, analiza e imprime información
+                del sistema de inventario.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="primary-button"
+            id="printReportButton"
+            disabled
+        >
+            Imprimir reporte
+        </button>
+    </div>
+
+    <!-- RESUMEN GENERAL -->
+    <div class="inventory-summary">
+
+        <div class="summary-card">
+            <span>Productos registrados</span>
+            <h2 id="reportProducts">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Solicitudes registradas</span>
+            <h2 id="reportRequests">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Movimientos registrados</span>
+            <h2 id="reportMovements">0</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Costo pendiente de compras</span>
+            <h2 id="reportPurchaseCost">₡0</h2>
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Filtros del reporte</h3>
+                <p>
+                    Selecciona la información que deseas consultar.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="reportType">
+                    Tipo de reporte
+                </label>
+
+                <select id="reportType">
+                    <option value="inventario">
+                        Inventario general
+                    </option>
+
+                    <option value="solicitudes">
+                        Solicitudes docentes
+                    </option>
+
+                    <option value="movimientos">
+                        Movimientos de inventario
+                    </option>
+
+                    <option value="compras">
+                        Compras y proveeduría
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="reportUnit">
+                    Unidad
+                </label>
+
+                <select id="reportUnit">
+                    <option value="Todas">
+                        Todas las unidades
+                    </option>
+
+                    <option value="Unidad 1">
+                        Unidad 1
+                    </option>
+
+                    <option value="Unidad 2">
+                        Unidad 2
+                    </option>
+
+                    <option value="Unidad 3">
+                        Unidad 3
+                    </option>
+
+                    <option value="Unidad 4">
+                        Unidad 4
+                    </option>
+
+                    <option value="Institucional">
+                        Institucional
+                    </option>
+                </select>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="reportStartDate">
+                    Fecha inicial
+                </label>
+
+                <input
+                    type="date"
+                    id="reportStartDate"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="reportEndDate">
+                    Fecha final
+                </label>
+
+                <input
+                    type="date"
+                    id="reportEndDate"
+                >
+            </div>
+
+        </div>
+
+        <div class="request-form-footer">
+
+            <p id="reportMessage" class="form-message">
+                Pendiente de conectar con Firebase.
+            </p>
+
+            <button
+                type="button"
+                class="primary-button"
+                id="generateReportButton"
+                disabled
+            >
+                Generar reporte
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- RESULTADOS DEL REPORTE -->
+    <div class="content-card" id="reportResultsCard">
+
+        <div class="section-heading">
+            <div>
+                <h3 id="reportResultsTitle">
+                    Resultados del reporte
+                </h3>
+
+                <p id="reportResultsDescription">
+                    Selecciona los filtros y genera un reporte
+                    para visualizar la información.
+                </p>
+            </div>
+        </div>
+
+        <!-- INDICADORES DEL REPORTE -->
+        <div class="inventory-summary">
+
+            <div class="summary-card">
+                <span>Registros encontrados</span>
+                <h2 id="reportResultCount">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Total de unidades</span>
+                <h2 id="reportResultUnits">0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Valor estimado</span>
+                <h2 id="reportResultValue">₡0</h2>
+            </div>
+
+        </div>
+
+        <!-- TABLA DINÁMICA -->
+        <div class="table-container">
+
+            <table id="reportResultsTable">
+
+                <thead id="reportTableHead">
+                    <tr>
+                        <th>Información</th>
+                        <th>Detalle</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+
+                <tbody id="reportTableBody">
+                    <tr>
+                        <td
+                            colspan="3"
+                            class="empty-message"
+                        >
+                            Todavía no se ha generado
+                            ningún reporte.
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+        
+<!-- CONFIGURACIÓN -->
+<section class="page" id="configuracion">
+
+    <div class="section-heading inventory-heading">
+        <div>
+            <h2>Configuración del sistema</h2>
+            <p>
+                Administra la información institucional
+                y consulta los datos generales del sistema.
+            </p>
+        </div>
+    </div>
+
+    <!-- INFORMACIÓN INSTITUCIONAL -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Información institucional</h3>
+                <p>
+                    Registra los datos generales de la institución.
+                </p>
+            </div>
+        </div>
+
+        <form id="settingsForm">
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="settingsInstitutionName">
+                        Nombre de la institución *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="settingsInstitutionName"
+                        placeholder="Nombre de la institución"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="settingsInstitutionEmail">
+                        Correo institucional
+                    </label>
+
+                    <input
+                        type="email"
+                        id="settingsInstitutionEmail"
+                        placeholder="institucion@correo.com"
+                    >
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="settingsInstitutionPhone">
+                        Teléfono
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="settingsInstitutionPhone"
+                        placeholder="Número telefónico"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="settingsInstitutionAddress">
+                        Dirección
+                    </label>
+
+                    <input
+                        type="text"
+                        id="settingsInstitutionAddress"
+                        placeholder="Dirección de la institución"
+                    >
+                </div>
+
+            </div>
+
+            <div class="request-form-footer">
+
+                <p id="settingsMessage" class="form-message">
+                    Pendiente de conectar con Firebase.
+                </p>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                    id="saveSettingsButton"
+                    disabled
+                >
+                    Guardar configuración
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- CUENTA ADMINISTRADORA -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Cuenta administradora</h3>
+                <p>
+                    Información de la cuenta conectada
+                    al sistema.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="settingsAdminName">
+                    Nombre del usuario
+                </label>
+
+                <input
+                    type="text"
+                    id="settingsAdminName"
+                    value="Sin conectar"
+                    readonly
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="settingsAdminEmail">
+                    Correo electrónico
+                </label>
+
+                <input
+                    type="email"
+                    id="settingsAdminEmail"
+                    placeholder="Sin conectar"
+                    readonly
+                >
+            </div>
+
+        </div>
+
+        <p class="field-help">
+            La información de esta cuenta se obtiene
+            automáticamente de Google.
+        </p>
+
+    </div>
+
+    <!-- INFORMACIÓN DEL SISTEMA -->
+    <div class="content-card" style="margin-bottom: 24px;">
+
+        <div class="section-heading">
+            <div>
+                <h3>Información del sistema</h3>
+                <p>
+                    Consulta el estado general de la aplicación.
+                </p>
+            </div>
+        </div>
+
+        <div class="inventory-summary">
+
+            <div class="summary-card">
+                <span>Nombre del sistema</span>
+                <h3>Sistema de Inventario Institucional</h3>
+            </div>
+
+            <div class="summary-card">
+                <span>Versión</span>
+                <h2>2.0</h2>
+            </div>
+
+            <div class="summary-card">
+                <span>Conexión</span>
+                <h3 id="settingsConnectionStatus">
+                    Sin verificar
+                </h3>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SEGURIDAD -->
+    <div class="content-card">
+
+        <div class="section-heading">
+            <div>
+                <h3>Seguridad y permisos</h3>
+                <p>
+                    Información sobre el acceso
+                    y la administración del sistema.
+                </p>
+            </div>
+        </div>
+
+        <div class="inventory-summary">
+
+            <div class="summary-card">
+                <span>Rol actual</span>
+                <h3 id="settingsCurrentRole">
+                    Sin conectar
+                </h3>
+            </div>
+
+            <div class="summary-card">
+                <span>Autenticación</span>
+                <h3>Google</h3>
+            </div>
+
+            <div class="summary-card">
+                <span>Base de datos</span>
+                <h3>Cloud Firestore</h3>
+            </div>
+
+        </div>
+
+        <p class="field-help">
+            Los permisos de acceso se administran
+            mediante las reglas de seguridad de Firebase.
+            Modificar estos datos no cambia los permisos
+            de los usuarios.
+        </p>
+
+    </div>
+
+</section>
+
+
+    </main>
+</div>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
